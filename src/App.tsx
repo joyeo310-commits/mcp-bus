@@ -24,7 +24,7 @@ export default function App() {
   const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('md');
   const [isLegendOpen, setIsLegendOpen] = useState<boolean>(false);
   const [isHealthOpen, setIsHealthOpen] = useState<boolean>(false);
-  const [searchMode, setSearchMode] = useState<'stop' | 'service'>('stop');
+  const [searchMode, setSearchMode] = useState<'stop' | 'service' | 'location'>('stop');
 
   // Active transit state
   const [currentStopCode, setCurrentStopCode] = useState<string>('03223'); // Peninsula Plaza default

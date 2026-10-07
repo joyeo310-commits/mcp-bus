@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Search, Navigation } from 'lucide-react';
+import { Search, Navigation, MapPin } from 'lucide-react';
 import { BUS_STOPS, BUS_SERVICES } from '../data/transitData';
 
 interface BusStopSearchBarProps {
-  searchMode: 'stop' | 'service';
-  setSearchMode: (mode: 'stop' | 'service') => void;
+  searchMode: 'stop' | 'service' | 'location';
+  setSearchMode: (mode: 'stop' | 'service' | 'location') => void;
   onSelectStop: (stopCode: string) => void;
   onSelectService: (serviceNo: string) => void;
   currentStopCode: string;
@@ -35,6 +35,18 @@ export const BusStopSearchBar: React.FC<BusStopSearchBarProps> = ({
   // Quick popular services
   const quickServices = ['147', '190', '502', '65', '12', '7', '174', '166', '851', '291'];
 
+  // Quick popular locations & landmarks
+  const quickLocations = [
+    { name: 'City Hall', code: '03223', landmark: 'Peninsula Plaza' },
+    { name: 'Orchard Road', code: '09048', landmark: 'Lucky Plaza' },
+    { name: 'Clarke Quay', code: '04168', landmark: 'Riverside' },
+    { name: 'Chinatown', code: '14119', landmark: 'Exit E' },
+    { name: 'Bugis', code: '01012', landmark: 'Grand Pacific' },
+    { name: 'Jurong Gateway', code: '28009', landmark: 'West Hub' },
+    { name: 'Tampines Central', code: '64009', landmark: 'East Hub' },
+    { name: 'Bedok Town', code: '84009', landmark: 'Bedok Int' }
+  ];
+
   // Filter recommendations based on input query
   const filteredStops = query.trim()
     ? BUS_STOPS.filter(
@@ -47,6 +59,15 @@ export const BusStopSearchBar: React.FC<BusStopSearchBarProps> = ({
 
   const filteredServices = query.trim()
     ? Object.keys(BUS_SERVICES).filter((svc) => svc.includes(query.trim()))
+    : [];
+
+  const filteredLocations = query.trim()
+    ? BUS_STOPS.filter(
+        (s) =>
+          s.name.toLowerCase().includes(query.toLowerCase()) ||
+          s.road.toLowerCase().includes(query.toLowerCase()) ||
+          s.zone.toLowerCase().includes(query.toLowerCase())
+      )
     : [];
 
   const handleSearchSubmit = (e?: React.FormEvent) => {
@@ -67,9 +88,21 @@ export const BusStopSearchBar: React.FC<BusStopSearchBarProps> = ({
         onSelectStop(clean);
         setQuery('');
       }
-    } else {
+    } else if (searchMode === 'service') {
       if (BUS_SERVICES[clean]) {
         onSelectService(clean);
+        setQuery('');
+      }
+    } else {
+      // searchMode === 'location'
+      const match = BUS_STOPS.find(
+        (s) =>
+          s.name.toLowerCase().includes(clean.toLowerCase()) ||
+          s.road.toLowerCase().includes(clean.toLowerCase()) ||
+          s.zone.toLowerCase().includes(clean.toLowerCase())
+      );
+      if (match) {
+        onSelectStop(match.code);
         setQuery('');
       }
     }
@@ -85,11 +118,11 @@ export const BusStopSearchBar: React.FC<BusStopSearchBarProps> = ({
     <div className="w-full space-y-3">
       {/* Tabbed Switcher: Pill segments with primary purple active state */}
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="inline-flex p-1 bg-[#EBEEF3] rounded-full border border-[#E2E8F0] shadow-2xs">
+        <div className="inline-flex p-1 bg-[#EBEEF3] rounded-full border border-[#E2E8F0] shadow-2xs overflow-x-auto">
           <button
             type="button"
             onClick={() => setSearchMode('stop')}
-            className={`px-4 py-1.5 rounded-full font-space text-xs font-bold transition-all ${
+            className={`px-3.5 sm:px-4 py-1.5 rounded-full font-space text-xs font-bold transition-all whitespace-nowrap ${
               searchMode === 'stop'
                 ? 'bg-[#6B1D73] text-white shadow-xs'
                 : 'text-[#4F434E] hover:text-[#181C20]'
@@ -100,13 +133,25 @@ export const BusStopSearchBar: React.FC<BusStopSearchBarProps> = ({
           <button
             type="button"
             onClick={() => setSearchMode('service')}
-            className={`px-4 py-1.5 rounded-full font-space text-xs font-bold transition-all ${
+            className={`px-3.5 sm:px-4 py-1.5 rounded-full font-space text-xs font-bold transition-all whitespace-nowrap ${
               searchMode === 'service'
                 ? 'bg-[#6B1D73] text-white shadow-xs'
                 : 'text-[#4F434E] hover:text-[#181C20]'
             }`}
           >
             Search by Service No.
+          </button>
+          <button
+            type="button"
+            onClick={() => setSearchMode('location')}
+            className={`px-3.5 sm:px-4 py-1.5 rounded-full font-space text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1 ${
+              searchMode === 'location'
+                ? 'bg-[#6B1D73] text-white shadow-xs'
+                : 'text-[#4F434E] hover:text-[#181C20]'
+            }`}
+          >
+            <MapPin className="w-3 h-3" />
+            <span>Search by Location</span>
           </button>
         </div>
 
@@ -137,7 +182,9 @@ export const BusStopSearchBar: React.FC<BusStopSearchBarProps> = ({
             placeholder={
               searchMode === 'stop'
                 ? 'Enter 5-digit bus stop no. or road (e.g. 03223, Orchard, Victoria St)...'
-                : 'Enter bus service number (e.g. 147, 190, 502, 65)...'
+                : searchMode === 'service'
+                ? 'Enter bus service number (e.g. 147, 190, 502, 65)...'
+                : 'Enter location, landmark, or street (e.g. Orchard, City Hall, Bugis, Jurong)...'
             }
             className="w-full h-12 pl-11 pr-28 rounded-lg bg-[#FFFFFF] border border-[#CBD5E1] text-[#181C20] placeholder-[#81737F] font-medium text-sm focus:outline-hidden focus:border-[#6B1D73] focus:ring-2 focus:ring-[#6B1D73]/30 transition-all shadow-xs"
           />
@@ -186,7 +233,7 @@ export const BusStopSearchBar: React.FC<BusStopSearchBarProps> = ({
                   No matching stops found. Try searching by road name or 5-digit code.
                 </div>
               )
-            ) : (
+            ) : searchMode === 'service' ? (
               filteredServices.length > 0 ? (
                 filteredServices.map((svc) => (
                   <button
@@ -206,14 +253,55 @@ export const BusStopSearchBar: React.FC<BusStopSearchBarProps> = ({
                         {BUS_SERVICES[svc]?.origin} ↔ {BUS_SERVICES[svc]?.destination}
                       </span>
                     </div>
-                    <span className="text-[10px] font-bold text-[#6B1D73]">
-                      {BUS_SERVICES[svc]?.category}
-                    </span>
+                    {BUS_SERVICES[svc]?.category !== 'Standard' && (
+                      <span className="text-[10px] font-bold text-[#6B1D73]">
+                        {BUS_SERVICES[svc]?.category}
+                      </span>
+                    )}
                   </button>
                 ))
               ) : (
                 <div className="p-4 text-xs text-[#81737F] text-center">
                   No matching service found.
+                </div>
+              )
+            ) : (
+              // searchMode === 'location'
+              filteredLocations.length > 0 ? (
+                filteredLocations.map((loc) => (
+                  <button
+                    key={loc.code}
+                    type="button"
+                    onMouseDown={() => {
+                      onSelectStop(loc.code);
+                      setQuery('');
+                    }}
+                    className="w-full px-4 py-2.5 text-left flex items-center justify-between hover:bg-[#F1F4F9] border-b border-slate-100 last:border-0"
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-[#6B1D73]/10 text-[#6B1D73] flex items-center justify-center shrink-0 mt-0.5">
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-xs text-[#181C20]">{loc.name}</span>
+                          <span className="font-space font-bold text-[#6B1D73] text-[11px] bg-[#F1F4F9] px-1.5 py-0.2 rounded">
+                            {loc.code}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[#81737F] mt-0.5">
+                          {loc.road} • {loc.services.length} services ({loc.services.slice(0, 4).join(', ')}...)
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-[10px] bg-[#E0E3E8] px-2 py-0.5 rounded text-[#4F434E] font-medium">
+                      {loc.zone}
+                    </span>
+                  </button>
+                ))
+              ) : (
+                <div className="p-4 text-xs text-[#81737F] text-center">
+                  No matching Singapore location found. Try searching e.g. Orchard, Bugis, Chinatown, or Jurong.
                 </div>
               )
             )}
@@ -224,32 +312,51 @@ export const BusStopSearchBar: React.FC<BusStopSearchBarProps> = ({
       {/* Quick Pills Recommendations */}
       <div className="flex items-center gap-1.5 flex-wrap text-xs">
         <span className="text-[#81737F] font-medium text-[11px] mr-1">Popular:</span>
-        {searchMode === 'stop'
-          ? quickStops.map((stop) => (
-              <button
-                key={stop.code}
-                type="button"
-                onClick={() => onSelectStop(stop.code)}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all ${
-                  currentStopCode === stop.code
-                    ? 'bg-[#6B1D73] text-white font-bold'
-                    : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#4F434E] hover:border-[#6B1D73] hover:text-[#6B1D73]'
-                }`}
-              >
-                <span className="font-space font-bold mr-1">{stop.code}</span>
-                <span>{stop.name}</span>
-              </button>
-            ))
-          : quickServices.map((svc) => (
-              <button
-                key={svc}
-                type="button"
-                onClick={() => onSelectService(svc)}
-                className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-[#FFFFFF] border border-[#E2E8F0] text-[#4F434E] hover:border-[#6B1D73] hover:text-[#6B1D73] font-space font-bold"
-              >
-                {svc}
-              </button>
-            ))}
+        {searchMode === 'stop' ? (
+          quickStops.map((stop) => (
+            <button
+              key={stop.code}
+              type="button"
+              onClick={() => onSelectStop(stop.code)}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all ${
+                currentStopCode === stop.code
+                  ? 'bg-[#6B1D73] text-white font-bold'
+                  : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#4F434E] hover:border-[#6B1D73] hover:text-[#6B1D73]'
+              }`}
+            >
+              <span className="font-space font-bold mr-1">{stop.code}</span>
+              <span>{stop.name}</span>
+            </button>
+          ))
+        ) : searchMode === 'service' ? (
+          quickServices.map((svc) => (
+            <button
+              key={svc}
+              type="button"
+              onClick={() => onSelectService(svc)}
+              className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-[#FFFFFF] border border-[#E2E8F0] text-[#4F434E] hover:border-[#6B1D73] hover:text-[#6B1D73] font-space font-bold"
+            >
+              {svc}
+            </button>
+          ))
+        ) : (
+          quickLocations.map((loc) => (
+            <button
+              key={loc.code}
+              type="button"
+              onClick={() => onSelectStop(loc.code)}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all flex items-center gap-1 ${
+                currentStopCode === loc.code
+                  ? 'bg-[#6B1D73] text-white font-bold'
+                  : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#4F434E] hover:border-[#6B1D73] hover:text-[#6B1D73]'
+              }`}
+            >
+              <MapPin className="w-3 h-3 text-[#6B1D73]" />
+              <span className="font-semibold">{loc.name}</span>
+              <span className="text-[10px] text-[#81737F]">({loc.landmark})</span>
+            </button>
+          ))
+        )}
       </div>
     </div>
   );

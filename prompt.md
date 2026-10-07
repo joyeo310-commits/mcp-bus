@@ -287,4 +287,15 @@ remove the word trunk
 git push
 ```
 
+---
+
+## Prompt 7: Add Search by Location
+
+**Timestamp:** 2026-10-06T23:47:21-07:00
+
+```markdown
+add on search by location next to search by service no.
+```
+
+
 
