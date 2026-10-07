@@ -1,0 +1,6 @@
+{
+  "name": "Singapore Civic Transit Modern - Bus Arrival Timings & Routes",
+  "description": "High-clarity, authoritative Singapore civic transit experience featuring real-time SBS Transit & LTA bus arrival timings, 3-stage arrival triad, passenger load indicators, vehicle deck types, and route maps.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

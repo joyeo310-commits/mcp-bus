@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --font-space: "Space Grotesk", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --color-sbs-purple: #6b1d73;
+  --color-sbs-purple-dark: #4f0058;
+  --color-sbs-red: #d32f2f;
+  --color-sbs-orange: #eb601b;
+  --color-lta-green: #00875a;
+  --color-lta-amber: #d97706;
+  --color-lta-red: #dc2626;
+  --color-deck-blue: #3b82f6;
+  --color-wab-blue: #0284c7;
+}
+
+:root {
+  --font-scale: 1;
+}
+
+html[data-font-size="sm"] {
+  --font-scale: 0.9;
+  font-size: 14.5px;
+}
+
+html[data-font-size="md"] {
+  --font-scale: 1;
+  font-size: 16px;
+}
+
+html[data-font-size="lg"] {
+  --font-scale: 1.15;
+  font-size: 18px;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F4F6F9;
+  color: #181C20;
+}
+
+.font-space {
+  font-family: 'Space Grotesk', sans-serif;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+/* Custom scrollbars for high-frequency transit tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f4f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
