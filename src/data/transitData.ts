@@ -133,7 +133,7 @@ export const BUS_SERVICES: Record<string, BusServiceDetail> = {
   '147': {
     serviceNo: '147',
     operator: 'SBS Transit',
-    category: 'Trunk',
+    category: 'Standard',
     origin: 'Hougang Central Int',
     destination: 'Jurong East Int',
     directions: [
@@ -186,7 +186,7 @@ export const BUS_SERVICES: Record<string, BusServiceDetail> = {
   '190': {
     serviceNo: '190',
     operator: 'SMRT',
-    category: 'Trunk',
+    category: 'Standard',
     origin: 'Choa Chu Kang Int',
     destination: 'Kampong Bahru Ter',
     directions: [
@@ -278,7 +278,7 @@ export const BUS_SERVICES: Record<string, BusServiceDetail> = {
   '65': {
     serviceNo: '65',
     operator: 'SBS Transit',
-    category: 'Trunk',
+    category: 'Standard',
     origin: 'Tampines Int',
     destination: 'HarbourFront Int',
     directions: [
@@ -321,7 +321,7 @@ export const BUS_SERVICES: Record<string, BusServiceDetail> = {
   '12': {
     serviceNo: '12',
     operator: 'Go-Ahead',
-    category: 'Trunk',
+    category: 'Standard',
     origin: 'Pasir Ris Int',
     destination: 'Kampong Bahru Ter',
     directions: [
@@ -367,7 +367,7 @@ export const BUS_SERVICES: Record<string, BusServiceDetail> = {
   '7': {
     serviceNo: '7',
     operator: 'SBS Transit',
-    category: 'Trunk',
+    category: 'Standard',
     origin: 'Bedok Int',
     destination: 'Clementi Int',
     directions: [
@@ -411,7 +411,7 @@ export const BUS_SERVICES: Record<string, BusServiceDetail> = {
   '174': {
     serviceNo: '174',
     operator: 'SBS Transit',
-    category: 'Trunk',
+    category: 'Standard',
     origin: 'Boon Lay Int',
     destination: 'Kampong Bahru Ter',
     directions: [
@@ -456,7 +456,7 @@ export const BUS_SERVICES: Record<string, BusServiceDetail> = {
   '166': {
     serviceNo: '166',
     operator: 'SBS Transit',
-    category: 'Trunk',
+    category: 'Standard',
     origin: 'Ang Mo Kio Int',
     destination: 'Clementi Int',
     directions: [
@@ -499,7 +499,7 @@ export const BUS_SERVICES: Record<string, BusServiceDetail> = {
   '851': {
     serviceNo: '851',
     operator: 'Tower Transit',
-    category: 'Trunk',
+    category: 'Standard',
     origin: 'Yishun Int',
     destination: 'Bukit Merah Int',
     directions: [
@@ -586,7 +586,7 @@ export const TRANSIT_ALERTS: TransitAlert[] = [
     timestamp: 'Yesterday, 22:30 SGT',
     validPeriod: 'Until 23:59 SGT tonight',
     affectedServices: ['147', '291', '88'],
-    summary: 'Free travel on designated SBS Transit feeder and trunk services parallel to LRT loop during track maintenance.',
+    summary: 'Free travel on designated SBS Transit feeder and regular bus services parallel to LRT loop during track maintenance.',
     details: 'Commuters tapping in at affected stations will receive auto fare waiver. Supplementary Double Deck buses deployed on Service 147.',
     affectedStops: ['64549']
   },
@@ -680,7 +680,7 @@ export function getLiveArrivalsForStop(stopCode: string, tickOffset: number = 0)
 
   return servicesCalling.map((svcNo, index) => {
     const detail = BUS_SERVICES[svcNo];
-    const category = detail ? detail.category : 'Trunk';
+    const category = detail ? detail.category : 'Standard';
     const operator = detail ? detail.operator : 'SBS Transit';
     const destinationName = detail?.directions[0]?.stops[detail.directions[0].stops.length - 1]?.stopName || 'Terminal';
     const destinationCode = detail?.directions[0]?.stops[detail.directions[0].stops.length - 1]?.stopCode || '00000';

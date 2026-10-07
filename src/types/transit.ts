@@ -1,6 +1,6 @@
 export type BusLoad = 'SEA' | 'SDA' | 'LSD'; // LTA standard: Seats Available, Standing Available, Limited Standing
 export type BusDeckType = 'SD' | 'DD' | 'BD'; // Single Deck, Double Deck, Bendy
-export type ServiceCategory = 'Trunk' | 'Express' | 'Feeder' | 'City Direct' | 'Night Rider';
+export type ServiceCategory = 'Standard' | 'Express' | 'Feeder' | 'City Direct' | 'Night Rider';
 
 export interface NextBusInfo {
   estimatedMinutes: number; // 0 for 'Arr', 1, 2, ...

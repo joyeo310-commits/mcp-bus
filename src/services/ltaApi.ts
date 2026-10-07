@@ -107,7 +107,7 @@ export async function fetchBusArrivals(
 
     const mapped: BusArrivalService[] = data.Services.map((svc) => {
       const detail = BUS_SERVICES[svc.ServiceNo];
-      const category = detail ? detail.category : 'Trunk';
+      const category = detail ? detail.category : 'Standard';
       const destinationName =
         detail?.directions[0]?.stops[detail.directions[0].stops.length - 1]?.stopName ||
         'Terminus';

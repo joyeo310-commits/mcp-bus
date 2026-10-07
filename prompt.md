@@ -266,3 +266,14 @@ Header:  AccountKey:
 ```markdown
 create a prompt.md containing all my prompts located at main project
 ```
+
+---
+
+## Prompt 5: Remove the word trunk
+
+**Timestamp:** 2026-10-06T23:36:29-07:00
+
+```markdown
+remove the word trunk
+```
+

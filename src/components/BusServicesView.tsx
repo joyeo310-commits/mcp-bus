@@ -38,7 +38,7 @@ export const BusServicesView: React.FC<BusServicesViewProps> = ({
           <span className="font-space font-bold text-xs uppercase tracking-wider text-[#6B1D73]">
             Select Transit Service:
           </span>
-          <span className="text-[11px] text-[#81737F]">10 High-Frequency Trunk & Express Routes</span>
+          <span className="text-[11px] text-[#81737F]">10 High-Frequency Routes</span>
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           {Object.keys(BUS_SERVICES).map((svcNo) => {
@@ -79,9 +79,11 @@ export const BusServicesView: React.FC<BusServicesViewProps> = ({
               }`}
             >
               <span>{service.serviceNo}</span>
-              <span className="text-[9px] uppercase tracking-wider opacity-80 mt-0.5 font-medium">
-                {service.category}
-              </span>
+              {service.category !== 'Standard' && (
+                <span className="text-[9px] uppercase tracking-wider opacity-80 mt-0.5 font-medium">
+                  {service.category}
+                </span>
+              )}
             </div>
 
             <div>

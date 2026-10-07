@@ -71,10 +71,10 @@ export const BusArrivalRow: React.FC<BusArrivalRowProps> = ({
         tagBg: 'bg-[#E6F4EA] text-[#006644] border-[#00875A]/30'
       };
     }
-    // Default Trunk
+    // Default Standard
     return {
       badgeBg: 'bg-[#6B1D73] text-white border-[#4F0058]',
-      tag: 'TRUNK',
+      tag: '',
       tagBg: 'bg-[#F1F4F9] text-[#6B1D73] border-[#6B1D73]/20'
     };
   };
@@ -172,9 +172,11 @@ export const BusArrivalRow: React.FC<BusArrivalRowProps> = ({
             <span className="font-space font-bold text-xl sm:text-2xl leading-none tracking-tight">
               {arrival.serviceNo}
             </span>
-            <span className="text-[8px] font-bold tracking-wider opacity-85 uppercase mt-0.5">
-              {arrival.category}
-            </span>
+            {badgeStyle.tag ? (
+              <span className="text-[8px] font-bold tracking-wider opacity-85 uppercase mt-0.5">
+                {badgeStyle.tag}
+              </span>
+            ) : null}
           </div>
 
           <div className="min-w-0 flex-1">
