@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bus, MapPin, AlertTriangle, Bookmark, HelpCircle, RefreshCw } from 'lucide-react';
+import { Bus, MapPin, AlertTriangle, Bookmark, HelpCircle, RefreshCw, Activity } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: 'arrivals' | 'routes' | 'map' | 'berths' | 'alerts' | 'saved';
@@ -7,6 +7,8 @@ interface HeaderProps {
   fontSize: 'sm' | 'md' | 'lg';
   setFontSize: (size: 'sm' | 'md' | 'lg') => void;
   onOpenLegend: () => void;
+  onOpenHealthModal?: () => void;
+  isLiveLta?: boolean;
   alertCount: number;
   refreshSeconds: number;
   onManualRefresh: () => void;
@@ -19,6 +21,8 @@ export const Header: React.FC<HeaderProps> = ({
   fontSize,
   setFontSize,
   onOpenLegend,
+  onOpenHealthModal,
+  isLiveLta = false,
   alertCount,
   refreshSeconds,
   onManualRefresh,
@@ -123,6 +127,19 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Global Live Stream Control & LTA Standards */}
         <div className="flex items-center space-x-2">
+          {onOpenHealthModal && (
+            <button
+              onClick={onOpenHealthModal}
+              className="flex items-center space-x-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-md border border-[#E2E8F0] bg-[#FFFFFF] hover:bg-[#F1F4F9] text-[#4F434E] transition-colors"
+              title="Open /api/health Monitor & LTA Endpoint Status"
+            >
+              <Activity className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="hidden sm:inline font-space">
+                {isLiveLta ? 'LTA Live' : 'API Health'}
+              </span>
+            </button>
+          )}
+
           <button
             onClick={onManualRefresh}
             disabled={isRefreshing}

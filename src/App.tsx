@@ -13,7 +13,9 @@ import { InterchangeDirectoryView } from './components/InterchangeDirectoryView'
 import { TransitAlertsView } from './components/TransitAlertsView';
 import { SavedCommutesView } from './components/SavedCommutesView';
 import { LtaLegendModal } from './components/LtaLegendModal';
+import { ApiHealthModal } from './components/ApiHealthModal';
 import { BUS_STOPS, BUS_SERVICES, TRANSIT_ALERTS, getLiveArrivalsForStop } from './data/transitData';
+import { fetchBusArrivals } from './services/ltaApi';
 import { BusStop, BusArrivalService } from './types/transit';
 
 export default function App() {
@@ -21,12 +23,14 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'arrivals' | 'routes' | 'map' | 'berths' | 'alerts' | 'saved'>('arrivals');
   const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('md');
   const [isLegendOpen, setIsLegendOpen] = useState<boolean>(false);
+  const [isHealthOpen, setIsHealthOpen] = useState<boolean>(false);
   const [searchMode, setSearchMode] = useState<'stop' | 'service'>('stop');
 
   // Active transit state
   const [currentStopCode, setCurrentStopCode] = useState<string>('03223'); // Peninsula Plaza default
   const [selectedServiceNo, setSelectedServiceNo] = useState<string>('147');
   const [arrivals, setArrivals] = useState<BusArrivalService[]>([]);
+  const [isLiveLta, setIsLiveLta] = useState<boolean>(false);
 
   // Live Auto-Refresh system
   const [refreshSeconds, setRefreshSeconds] = useState<number>(15);
@@ -74,9 +78,18 @@ export default function App() {
     }
   }, [bookmarkedServices]);
 
-  // Load and refresh arrivals data
+  // Load and refresh arrivals data from /api/bus-arrival
   useEffect(() => {
-    setArrivals(getLiveArrivalsForStop(currentStopCode, dataTick));
+    let isCancelled = false;
+    fetchBusArrivals(currentStopCode, undefined, dataTick).then((res) => {
+      if (!isCancelled) {
+        setArrivals(res.arrivals);
+        setIsLiveLta(res.isLiveLta);
+      }
+    });
+    return () => {
+      isCancelled = true;
+    };
   }, [currentStopCode, dataTick]);
 
   // Countdown auto-refresh ticker
@@ -138,6 +151,8 @@ export default function App() {
         fontSize={fontSize}
         setFontSize={setFontSize}
         onOpenLegend={() => setIsLegendOpen(true)}
+        onOpenHealthModal={() => setIsHealthOpen(true)}
+        isLiveLta={isLiveLta}
         alertCount={TRANSIT_ALERTS.length}
         refreshSeconds={refreshSeconds}
         onManualRefresh={handleManualRefresh}
@@ -232,6 +247,10 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-4 text-[11px] font-semibold text-[#81737F] flex-wrap justify-center">
+            <button onClick={() => setIsHealthOpen(true)} className="hover:text-[#6B1D73] text-emerald-700 font-bold">
+              API Health Monitor
+            </button>
+            <span>•</span>
             <button onClick={() => setIsLegendOpen(true)} className="hover:text-[#6B1D73]">
               LTA Capacity Rules
             </button>
@@ -251,6 +270,9 @@ export default function App() {
 
       {/* LTA Standards Guide Modal */}
       <LtaLegendModal isOpen={isLegendOpen} onClose={() => setIsLegendOpen(false)} />
+
+      {/* API Health & Gateway Monitor Modal */}
+      <ApiHealthModal isOpen={isHealthOpen} onClose={() => setIsHealthOpen(false)} />
     </div>
   );
 }
